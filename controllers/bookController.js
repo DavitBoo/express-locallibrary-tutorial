@@ -15,6 +15,7 @@ exports.index = asyncHandler(async (req, res, next) => {
     Genre.countDocuments({}).exec(),
   ]);
 
+  console.log("hey!!!");
   res.render("index", {
     title: "Local Library Home",
     book_count: numBooks,
