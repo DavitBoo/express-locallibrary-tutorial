@@ -55,7 +55,7 @@ exports.bookinstance_create_post = [
     const errors = validationResult(req);
 
     // Create a BookInstance object with escaped and trimmed data.
-    const bookInstance = new BookInstance({
+    const bookinstance = new BookInstance({
       book: req.body.book,
       imprint: req.body.imprint,
       status: req.body.status,
@@ -70,28 +70,57 @@ exports.bookinstance_create_post = [
       res.render("bookinstance_form", {
         title: "Create BookInstance",
         book_list: allBooks,
-        selected_book: bookInstance.book._id,
+        selected_book: bookinstance.book._id,
         errors: errors.array(),
-        bookinstance: bookInstance,
+        bookinstance: bookinstance,
       });
       return;
     } else {
       // Data from form is valid
-      await bookInstance.save();
-      res.redirect(bookInstance.url);
+      await bookinstance.save();
+      res.redirect(bookinstance.url);
     }
   }),
 ];
 
 // Display BookInstance delete form on GET.
-exports.bookinstance_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: BookInstance delete GET");
-});
+exports.bookinstance_delete_get = async (req, res, next) => {
+  try {
+    const bookinstance = await BookInstance.findById(req.params.id).exec();
+
+    if (bookinstance === null) {
+      // No results.
+      res.redirect("/catalog/bookinstances");
+    } else {
+      res.render("bookInstance_delete", {
+        title: "Delete Book Instance",
+        bookinstance: bookinstance,
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
 
 // Handle BookInstance delete on POST.
-exports.bookinstance_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: BookInstance delete POST");
-});
+exports.bookinstance_delete_post = async (req, res, next) => {
+  try {
+    const bookInstance = await BookInstance.findByIdAndRemove(req.params.id);
+
+    if (!bookInstance) {
+      // No results.
+      res.redirect("/catalog/bookinstances");
+      return;
+    }
+
+    // Assuming you also want to remove the associated Genre.
+    await BookInstance.findByIdAndRemove(req.body.bookinstanceid);
+
+    res.redirect("/catalog/bookinstances");
+  } catch (err) {
+    next(err);
+  }
+};
 
 // Display BookInstance update form on GET.
 exports.bookinstance_update_get = asyncHandler(async (req, res, next) => {
