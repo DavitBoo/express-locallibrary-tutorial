@@ -142,7 +142,7 @@ exports.author_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display Author update form on GET.
 exports.author_update_get = asyncHandler(async (req, res, next) => {
-  // Get author and books.
+  // Get author.
   const author = await Author.findById(req.params.id).exec();
 
   if (author === null) {
