@@ -25,7 +25,6 @@ AuthorSchema.virtual("url").get(function () {
 });
 
 AuthorSchema.virtual("date_of_birth_formatted").get(function () {
-  console.log("hey");
   return this.date_of_birth ? DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED) : "";
 });
 

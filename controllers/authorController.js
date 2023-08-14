@@ -140,6 +140,8 @@ exports.author_delete_post = asyncHandler(async (req, res, next) => {
   }
 });
 
+const debug = require("debug")("author");
+
 // Display Author update form on GET.
 exports.author_update_get = asyncHandler(async (req, res, next) => {
   // Get author.
@@ -147,6 +149,7 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
 
   if (author === null) {
     // No results.
+    debug(`id not found on update: ${req.params.id}`);
     const err = new Error("Author not found");
     err.status = 404;
     return next(err);
